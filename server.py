@@ -16,6 +16,10 @@ app.static('/', './static')
 async def test(request):
   return text('It\'s working!')
 
+@app.route("/api/v1/test", methods=['GET'])
+async def api_test(request):
+  return text('It\'s working!')
+
 @app.route('/api/v1/upload', methods=['POST'])
 async def post_handler(request):
   if request.files.get("image") is None:
