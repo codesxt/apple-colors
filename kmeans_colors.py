@@ -1,5 +1,5 @@
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import argparse
 import cv2
 import numpy as np
