@@ -8,7 +8,7 @@ from sanic_cors import CORS, cross_origin
 #Config.KEEP_ALIVE = False
 Config.REQUEST_TIMEOUT    = 60*5
 Config.RESPONSE_TIMEOUT   = 60*5
-Config.KEEP_ALIVE_TIMEOUT = 60
+Config.KEEP_ALIVE_TIMEOUT = 60*5
 import server_analyzer as img_analyzer
 
 app = Sanic(__name__)
