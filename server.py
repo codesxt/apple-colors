@@ -5,7 +5,7 @@ from sanic import Sanic
 from sanic.response import json, html, text
 from sanic.config import Config
 from sanic_cors import CORS, cross_origin
-Config.KEEP_ALIVE = False
+#Config.KEEP_ALIVE = False
 import server_analyzer as img_analyzer
 
 app = Sanic(__name__)
