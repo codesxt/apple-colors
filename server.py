@@ -6,6 +6,9 @@ from sanic.response import json, html, text
 from sanic.config import Config
 from sanic_cors import CORS, cross_origin
 #Config.KEEP_ALIVE = False
+Config.REQUEST_TIMEOUT    = 60*5
+Config.RESPONSE_TIMEOUT   = 60*5
+Config.KEEP_ALIVE_TIMEOUT = 60
 import server_analyzer as img_analyzer
 
 app = Sanic(__name__)
