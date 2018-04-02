@@ -52,7 +52,7 @@ async def post_handler(request):
     file_storage.close()
 
     server_log('Starting analysis.')
-    await response = img_analyzer.analyze_apples(input_file, 'images/red-template.png')
+    response = img_analyzer.analyze_apples(input_file, 'images/red-template.png')
     server_log('Analysis done.')
     os.remove(input_file)
     return json(
