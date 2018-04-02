@@ -3,6 +3,18 @@ import cv2
 from background_classification import *
 from intensity_classification import *
 
+def limit_resolution(image):
+  limit_h = 480
+  limit_w = 640
+  img_h = image.shape[0]
+  img_w = image.shape[1]
+  if(img_h > img_w):
+    scale = limit_h/img_h
+  else:
+    scale = limit_w/img_w
+  image = cv2.resize(image, None, fx=scale, fy=scale, interpolation = cv2.INTER_LINEAR)
+  return image
+
 def analyze_apples(image_file, image_template):
   target_image    = image_file
   reference_image = image_template
@@ -11,6 +23,7 @@ def analyze_apples(image_file, image_template):
   hsv = cv2.cvtColor(roi,cv2.COLOR_BGR2HSV)
 
   target = cv2.imread(target_image)
+  target = limit_resolution(target)
   hsvt   = cv2.cvtColor(target,cv2.COLOR_BGR2HSV)
 
   # calculating object histogram
