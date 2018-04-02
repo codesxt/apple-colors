@@ -6,9 +6,11 @@ from sanic.response import json, html, text
 from sanic.config import Config
 from sanic_cors import CORS, cross_origin
 #Config.KEEP_ALIVE = False
-Config.REQUEST_TIMEOUT    = 60*5
-Config.RESPONSE_TIMEOUT   = 60*5
-Config.KEEP_ALIVE_TIMEOUT = 60*5
+Config.REQUEST_TIMEOUT    = 60*10
+Config.RESPONSE_TIMEOUT   = 60*10
+Config.KEEP_ALIVE_TIMEOUT = 60*10
+Config.KEEP_ALIVE         = True
+Config.REQUEST_MAX_SIZE   = 100000000000
 import server_analyzer as img_analyzer
 
 app = Sanic(__name__)
@@ -50,7 +52,7 @@ async def post_handler(request):
     file_storage.close()
 
     server_log('Starting analysis.')
-    response = img_analyzer.analyze_apples(input_file, 'images/red-template.png')
+    await response = img_analyzer.analyze_apples(input_file, 'images/red-template.png')
     server_log('Analysis done.')
     os.remove(input_file)
     return json(
