@@ -16,7 +16,7 @@ def limit_resolution(image):
   image = cv2.resize(image, None, fx=scale, fy=scale, interpolation = cv2.INTER_LINEAR)
   return image
 
-def analyze_apples(image_file, image_template):
+def analyze_apples(image_file, image_template, id):
   target_image    = image_file
   reference_image = image_template
 
@@ -43,6 +43,10 @@ def analyze_apples(image_file, image_template):
 
   red_area = cv2.bitwise_and(target, thresh)
   green_area = cv2.bitwise_and(target, cv2.bitwise_not(thresh))
+  red_file = 'static/results/'+id+'_WTEMPLATE_RED.png'
+  green_file = 'static/results/'+id+'_WTEMPLATE_GREEN.png'
+  cv2.imwrite(red_file, red_area)
+  cv2.imwrite(green_file, green_area)
 
   dst = cv2.merge((dst, dst, dst))
   stacked = np.hstack((target, thresh, red_area, green_area))
@@ -80,6 +84,8 @@ def analyze_apples(image_file, image_template):
             'color': color
         }
     )
+  result['red_file'] = ('https://heladas.utalca.cl/apples/'+red_file).replace('/static', '')
+  result['green_file'] = ('https://heladas.utalca.cl/apples/'+green_file).replace('/static', '')
 
   return(result)
 
@@ -101,7 +107,7 @@ def build_red_mask(image_hsv):
     mask    = cv2.merge((mh,mh,mh))
     return mask
 
-def hsv_analysis(image_file):
+def hsv_analysis(image_file, id):
     print('ANÁLISIS MEDIANTE SEGMENTACIÓN DE COLORES HSV')
     image_o = cv2.imread(image_file)
     hsv     = cv2.cvtColor(image_o, cv2.COLOR_BGR2HSV)
@@ -118,6 +124,10 @@ def hsv_analysis(image_file):
 
     red_area = cv2.bitwise_and(image_o, mask)
     green_area = cv2.bitwise_and(image_o, cv2.bitwise_not(mask))
+    red_file = 'static/results/'+id+'_WHSV_RED.png'
+    green_file = 'static/results/'+id+'_WHSV_GREEN.png'
+    cv2.imwrite(red_file, red_area)
+    cv2.imwrite(green_file, green_area)
 
     result = {}
     result['coverage_area'] = '{0:.2f}'.format(white/total*100)
@@ -148,5 +158,7 @@ def hsv_analysis(image_file):
               'color': color
           }
       )
+    result['red_file'] = ('https://heladas.utalca.cl/apples/'+red_file).replace('/static', '')
+    result['green_file'] = ('https://heladas.utalca.cl/apples/'+green_file).replace('/static', '')
 
     return(result)
