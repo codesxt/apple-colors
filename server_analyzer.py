@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from background_classification import *
 from intensity_classification import *
+import kmeans_colors as km
 
 def limit_resolution(image):
   limit_h = 480
@@ -56,7 +57,6 @@ def analyze_apples(image_file, image_template):
 
   print('Color de Cubrimiento: {0:.2f} % del área'.format(white/total*100))
 
-  import kmeans_colors as km
   print('Análisis de color de fondo:')
   (hist, colors, bar) = km.get_dominant_colors(green_area)
   for idx, color in enumerate(colors):
@@ -82,3 +82,71 @@ def analyze_apples(image_file, image_template):
     )
 
   return(result)
+
+def build_red_mask(image_hsv):
+    h, s, v = cv2.split(image_hsv)
+
+    ret, mh = cv2.threshold(h, 325/2, 255, cv2.THRESH_BINARY)       # Mayor al primer valor
+    ret, mn = cv2.threshold(h, 360/2, 255, cv2.THRESH_BINARY_INV)   # Menor al segundo valor
+    mh      = cv2.bitwise_and(mh, mn)
+    ret, mh2= cv2.threshold(h, 0, 255, cv2.THRESH_BINARY)       # Mayor al primer valor
+    ret, mn2= cv2.threshold(h, 10/2, 255, cv2.THRESH_BINARY_INV)   # Menor al segundo valor
+
+    # Cuando hay un rojo 0 se puede confundir con el fondo negro
+    ret, sat= cv2.threshold(s, 10, 255, cv2.THRESH_BINARY)
+    mh2     = cv2.bitwise_or(mh2, sat)
+
+    mh2     = cv2.bitwise_and(mh2, mn2)
+    mh      = cv2.bitwise_or(mh, mh2)
+    mask    = cv2.merge((mh,mh,mh))
+    return mask
+
+def hsv_analysis(image_file):
+    print('ANÁLISIS MEDIANTE SEGMENTACIÓN DE COLORES HSV')
+    image_o = cv2.imread(image_file)
+    hsv     = cv2.cvtColor(image_o, cv2.COLOR_BGR2HSV)
+
+    mask = build_red_mask(hsv)
+    # Now convolute with circular disc
+    disc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5))
+    cv2.filter2D(mask,-1,disc,mask)
+
+    (m1, m2, m3) = cv2.split(mask)
+
+    white = m1.ravel().sum()/255
+    total = m1.ravel().shape[0]
+
+    red_area = cv2.bitwise_and(image_o, mask)
+    green_area = cv2.bitwise_and(image_o, cv2.bitwise_not(mask))
+
+    result = {}
+    result['coverage_area'] = '{0:.2f}'.format(white/total*100)
+    result['background_colors'] = []
+    result['foreground_colors'] = []
+
+    print('Color de Cubrimiento: {0:.2f} % del área'.format(white/total*100))
+    print('Análisis de color de fondo:')
+    (hist, colors, bar) = km.get_dominant_colors(green_area)
+    for idx, color in enumerate(colors):
+      print(idx, hist[idx], classify_color_rgb(color), color)
+      result['background_colors'].append(
+          {
+              'percentage': hist[idx],
+              'class': classify_color_rgb(color),
+              'color': color
+          }
+      )
+
+    print('Análisis de color de cubrimiento:')
+    (hist_red, colors_red, bar_red) = km.get_dominant_colors(red_area)
+    for idx, color in enumerate(colors_red):
+      print(idx, hist_red[idx], classify_color_intensity_rgb(color[0], color[1], color[2]), color)
+      result['foreground_colors'].append(
+          {
+              'percentage': hist_red[idx],
+              'score': classify_color_intensity_rgb(color[0], color[1], color[2]),
+              'color': color
+          }
+      )
+
+    return(result)

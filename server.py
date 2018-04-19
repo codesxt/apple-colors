@@ -52,11 +52,15 @@ async def post_handler(request):
     file_storage.close()
 
     server_log('Starting analysis.')
-    response = img_analyzer.analyze_apples(input_file, 'images/red-template.png')
+    response  = img_analyzer.analyze_apples(input_file, 'images/red-template.png')
+    response2 = img_analyzer.hsv_analysis(input_file)
     server_log('Analysis done.')
     os.remove(input_file)
     return json(
-      {'results': response},
+      {
+        'results': response,
+        'results2' : response2
+        },
         headers={'X-Served-By': 'sanic'},
         status=200
     )
