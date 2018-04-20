@@ -110,6 +110,7 @@ def build_red_mask(image_hsv):
 def hsv_analysis(image_file, id):
     print('ANÁLISIS MEDIANTE SEGMENTACIÓN DE COLORES HSV')
     image_o = cv2.imread(image_file)
+    image_o = limit_resolution(image_o)
     hsv     = cv2.cvtColor(image_o, cv2.COLOR_BGR2HSV)
 
     mask = build_red_mask(hsv)
