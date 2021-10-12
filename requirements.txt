@@ -33,7 +33,7 @@ ntplib==0.3.3
 numpy==1.14.2
 numpy-stl==2.2.3
 olefile==0.45.1
-opencv-python==3.4.0.12
+opencv-python==3.4.7.28
 ordered-set==2.0.0
 pid==2.1.1
 Pillow==5.0.0
