@@ -67,7 +67,7 @@ requests==2.18.4
 requests-file==1.4
 requests-ftp==0.3.1
 rpm==4.14.1
-sanic==0.7.0
+sanic==20.12.6
 Sanic-Cors==0.9.3
 Sanic-Plugins-Framework==0.5.2.dev20180201
 scikit-image==0.13.1
