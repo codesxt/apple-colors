@@ -30,7 +30,7 @@ netifaces==0.10.6
 networkx==2.1
 nine==0.3.4
 ntplib==0.3.3
-numpy==1.14.2
+numpy==1.22.0
 numpy-stl==2.2.3
 olefile==0.45.1
 opencv-python==3.4.0.12
