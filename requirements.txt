@@ -23,7 +23,7 @@ IPy==0.81
 isc==2.0
 kiwisolver==1.0.1
 langtable==0.0.38
-Mako==1.0.6.dev0
+Mako==1.2.2
 MarkupSafe==0.23
 matplotlib==2.2.2
 netifaces==0.10.6
